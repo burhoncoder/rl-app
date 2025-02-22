@@ -8,7 +8,7 @@ export class LocusEntity {
   id: number;
 
   @Column()
-  assemblyId: number;
+  assemblyId: string;
 
   @Column()
   locusName: string;
