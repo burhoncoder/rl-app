@@ -5,6 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class PaginationDto {
   @ApiProperty({
     description: 'Page of the paginated result',
+    type: Number,
     required: false,
   })
   @IsPositive()
@@ -15,6 +16,7 @@ export class PaginationDto {
 
   @ApiProperty({
     description: 'Limit of the paginated result',
+    type: Number,
     required: false,
   })
   @IsPositive()

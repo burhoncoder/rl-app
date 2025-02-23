@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { LocusEntity } from '../domain/locus.entity';
 import { GetLocusQueryDto } from '../app/get-locus-query.dto';
+import { createPaginatedResult } from '../../../utils';
 
 @Injectable()
-export class LocusRepository extends Repository<LocusEntity> {
-  findLocus(filters: GetLocusQueryDto) {
+export class LocusRepository {
+  constructor(
+    @InjectRepository(LocusEntity)
+    private locusRepository: Repository<LocusEntity>,
+  ) {}
+
+  async findLocus(filters: GetLocusQueryDto) {
     const {
       id,
       assemblyId,
@@ -18,9 +25,11 @@ export class LocusRepository extends Repository<LocusEntity> {
       sort,
     } = filters;
 
-    const queryBuilder = this.createQueryBuilder('locus');
+    const queryBuilder = this.locusRepository.createQueryBuilder('locus');
 
-    queryBuilder.leftJoinAndSelect('locus.locusMembers', 'locusMember');
+    if (regionId || membershipStatus || sideLoad === 'locusMembers') {
+      queryBuilder.leftJoin('locus.locusMembers', 'locusMember');
+    }
 
     if (id) {
       queryBuilder.andWhere('locus.id = :id', { id });
@@ -41,16 +50,19 @@ export class LocusRepository extends Repository<LocusEntity> {
       );
     }
 
-    if (sort) {
-      queryBuilder.orderBy(`locus.${sort}`, 'ASC');
-    }
-
-    queryBuilder.skip((page - 1) * limit).take(limit);
-
     if (sideLoad === 'locusMembers') {
       queryBuilder.addSelect('locusMember');
     }
 
-    return queryBuilder.getMany();
+    queryBuilder.skip((page - 1) * limit).take(limit);
+    queryBuilder.orderBy(`locus.${sort}`, 'ASC');
+
+    const result = await queryBuilder.getManyAndCount();
+    return createPaginatedResult({
+      items: result[0],
+      totalItems: result[1],
+      limit,
+      page,
+    });
   }
 }
