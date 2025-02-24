@@ -1,9 +1,8 @@
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 export const databaseConfig: TypeOrmModuleAsyncOptions = {
-  imports: [ConfigModule],
   inject: [ConfigService],
   useFactory: (config: ConfigService) => ({
     type: 'postgres',

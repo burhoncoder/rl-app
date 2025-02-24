@@ -6,15 +6,17 @@ import { databaseConfig } from './infra/db';
 
 import { LocusModule } from './modules/locus/locus.module';
 import { LocusMemberModule } from './modules/locus-member/locus-member.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync(databaseConfig),
     LocusModule,
     LocusMemberModule,
+    AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
