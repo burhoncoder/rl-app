@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { LocusEntity } from '../domain/locus.entity';
-import { GetLocusQueryDto } from '../app/get-locus-query.dto';
 import { createPaginatedResult } from '../../../utils';
+
+import { LocusEntity } from '../domain/locus.entity';
+import { GetLocusQueryFilter } from '../app/get-locus-query.filter';
 
 @Injectable()
 export class LocusRepository {
@@ -13,11 +14,11 @@ export class LocusRepository {
     private locusRepository: Repository<LocusEntity>,
   ) {}
 
-  async findLocus(filters: GetLocusQueryDto) {
+  async findLocus(filters: GetLocusQueryFilter) {
     const {
       id,
       assemblyId,
-      regionId,
+      regionIds,
       membershipStatus,
       sideLoad,
       page,
@@ -27,7 +28,11 @@ export class LocusRepository {
 
     const queryBuilder = this.locusRepository.createQueryBuilder('locus');
 
-    if (regionId || membershipStatus || sideLoad === 'locusMembers') {
+    if (
+      regionIds.length > 0 ||
+      membershipStatus ||
+      sideLoad === 'locusMembers'
+    ) {
       queryBuilder.leftJoin('locus.locusMembers', 'locusMember');
     }
 
@@ -39,8 +44,10 @@ export class LocusRepository {
       queryBuilder.andWhere('locus.assemblyId = :assemblyId', { assemblyId });
     }
 
-    if (regionId) {
-      queryBuilder.andWhere('locusMember.regionId = :regionId', { regionId });
+    if (regionIds.length > 0) {
+      queryBuilder.andWhere('locusMember.regionId IN (:...regionIds)', {
+        regionIds,
+      });
     }
 
     if (membershipStatus) {

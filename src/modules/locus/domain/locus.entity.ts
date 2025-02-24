@@ -1,7 +1,7 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { LocusMemberEntity } from '../../locus-member/domain/locus-member.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { LocusMemberEntity } from '../../locus-member';
 
 @Entity('rnc_locus')
 export class LocusEntity {

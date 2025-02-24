@@ -8,9 +8,11 @@ import {
 
 import { createPaginatedResponseSchema } from '../../utils/createPaginatedResponseSchema';
 
+import { ActiveUser, ActiveUserType } from '../auth';
+
+import { LocusEntity } from './domain/locus.entity';
 import { LocusService } from './app/locus.service';
 import { GetLocusQueryDto } from './app/get-locus-query.dto';
-import { LocusEntity } from './domain/locus.entity';
 
 @Controller('locus')
 @ApiExtraModels(LocusEntity)
@@ -28,7 +30,10 @@ export class LocusController {
     schema: createPaginatedResponseSchema(getSchemaPath(LocusEntity)),
   })
   @Get()
-  getLocus(@Query() getLocusQuery: GetLocusQueryDto) {
-    return this.locusService.getLocus(getLocusQuery);
+  getLocus(
+    @Query() getLocusQuery: GetLocusQueryDto,
+    @ActiveUser() user: ActiveUserType,
+  ) {
+    return this.locusService.getLocus(getLocusQuery, user);
   }
 }

@@ -5,7 +5,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from '../../infra/jwt';
 
 import { AuthController } from './auth.controller';
-
 import { AuthService } from './app/auth.service';
 import { AuthGuard } from './app/auth.guard';
 

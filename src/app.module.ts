@@ -4,9 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { databaseConfig } from './infra/db';
 
-import { LocusModule } from './modules/locus/locus.module';
-import { LocusMemberModule } from './modules/locus-member/locus-member.module';
-import { AuthModule } from './modules/auth/auth.module';
+import { LocusModule } from './modules/locus';
+import { LocusMemberModule } from './modules/locus-member';
+import { AuthModule } from './modules/auth';
 
 @Module({
   imports: [

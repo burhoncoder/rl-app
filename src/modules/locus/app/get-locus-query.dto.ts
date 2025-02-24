@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
   IsInt,
@@ -6,18 +7,17 @@ import {
   IsString,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
 
 import { PaginationDto } from '../../../core/dto';
 
-enum SortValues {
+export enum SortValues {
   ID = 'id',
   ASSEMBLY_ID = 'assemblyId',
   LOCUS_START = 'locusStart',
   LOCUST_STOP = 'locusStop',
 }
 
-enum SideLoadValues {
+export enum SideLoadValues {
   LOCUS_MEMBERS = 'locusMembers',
 }
 
@@ -69,7 +69,7 @@ export class GetLocusQueryDto extends PaginationDto {
   })
   @IsEnum(SideLoadValues)
   @IsOptional()
-  sideLoad?: 'locusMembers';
+  sideLoad?: SideLoadValues;
 
   @ApiProperty({
     description: 'Sort field',
@@ -79,5 +79,5 @@ export class GetLocusQueryDto extends PaginationDto {
   })
   @IsEnum(SortValues)
   @IsOptional()
-  sort: string = 'id';
+  sort: SortValues = SortValues.ID;
 }
